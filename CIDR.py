@@ -1,7 +1,4 @@
-import os
-import sys
 import time
-
 import os
 
 os.system("clear")
@@ -30,21 +27,28 @@ def main():
     if answer.lower() != "yes":
         print("Come back when you are protected, you noob.")
         sys.exit()
-
-    ip_address = input("What IP address are you scanning? ")
-    command = f'sudo nmap -p 22 -oG - {ip_address} | awk \'/open/ {{print $2}}\' > ports.txt'
+    
+    scan_type = input("Are we scanning from a file (press 1) or a single IP (press 2)? ")
+    if scan_type == "2":
+        ip_address = input("What IP address are you scanning? ")
+        command = f'sudo nmap -p 22 -oG - {ip_address} | awk \'/open/ {{print $2}}\' > ports.txt'
+    elif scan_type == "1":
+        file_name = input("What is the file we are scanning? ")
+        command = f'sudo nmap -p 22 -oG - -iL {file_name} | awk \'/open/ {{print $2}}\' > ports.txt'
     os.system(command)
+    
     print("Output saved to ports.txt")
     os_scan = input("Would you like to run an OS scan of the results? (yes/no)")
     if os_scan.lower() == "yes":
-        print("Checking for raspberry pi OS. This may take a few.", end = "")
+        print("Checking for OS. This may take a few.", end = "")
         for i in range(5):
             print(".", end = "", flush = True)
             time.sleep(0.6)
-        os_scan_command = f'sudo nmap -O -iL ports.txt > raspberry.txt'
+        os_scan_command = f'sudo nmap -O -iL ports.txt > OS_scan.txt'
         os.system(os_scan_command)
-        print("\nOS scan results saved to raspberry.txt")
+        print("\nOS scan results saved to OS_scan.txt")
         os.system("python osscan.py")
+
         brute_force = input("Would you like me to run a brute force attack on the Pi's you found? (yes/no)")
     if brute_force.lower() == "yes":
         default_credentials = input("Would you like to use the default Pi credentials? (yes/no)")

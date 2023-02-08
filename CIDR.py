@@ -27,27 +27,28 @@ def main():
     if answer.lower() != "yes":
         print("Come back when you are protected, you noob.")
         sys.exit()
-    
+
+    port = input("What port are we looking for? ")
     scan_type = input("Are we scanning from a file (press 1) or a single IP (press 2)? ")
     if scan_type == "2":
         ip_address = input("What IP address are you scanning? ")
-        command = f'sudo nmap -p 22 -oG - {ip_address} | awk \'/open/ {{print $2}}\' > ports.txt'
+        command = f'sudo nmap -p {port} -oG - {ip_address} | awk \'/open/ {{print $2}}\' > port_{port}.txt'
     elif scan_type == "1":
         file_name = input("What is the file we are scanning? ")
-        command = f'sudo nmap -p 22 -oG - -iL {file_name} | awk \'/open/ {{print $2}}\' > ports.txt'
+        command = f'sudo nmap -p {port} -oG - -iL {file_name} | awk \'/open/ {{print $2}}\' > port_{port}.txt'
     os.system(command)
-    
-    print("Output saved to ports.txt")
+
+    print(f"Output saved to port_{port}.txt")
     os_scan = input("Would you like to run an OS scan of the results? (yes/no)")
     if os_scan.lower() == "yes":
         print("Checking for OS. This may take a few.", end = "")
         for i in range(5):
             print(".", end = "", flush = True)
             time.sleep(0.6)
-        os_scan_command = f'sudo nmap -O -iL ports.txt > OS_scan.txt'
+        os_scan_command = f'sudo nmap -O -iL port_{port}.txt > OS_scan.txt'
         os.system(os_scan_command)
         print("\nOS scan results saved to OS_scan.txt")
-        os.system("python osscan.py")
+        os.system(f"python osscan.py {port}")
 
         brute_force = input("Would you like me to run a brute force attack on the Pi's you found? (yes/no)")
     if brute_force.lower() == "yes":

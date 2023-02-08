@@ -1,7 +1,10 @@
+import sys
 import re
 
+port = sys.argv[1]
+
 # Open the file to be scanned
-with open('ports.txt', 'r') as f:
+with open(f'port_{port}.txt', 'r') as f:
     # Read the contents of the file into a variable
     file_contents = f.read()
     
